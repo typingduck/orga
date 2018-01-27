@@ -1,0 +1,14 @@
+attrs==17.4.0
+cycler==0.10.0
+decorator==4.2.1
+itermplot==0.20
+matplotlib==2.1.2
+networkx==2.1
+numpy==1.14.0
+pluggy==0.6.0
+py==1.5.2
+pyparsing==2.2.0
+pytest==3.3.2
+python-dateutil==2.6.1
+pytz==2017.3
+six==1.11.0
