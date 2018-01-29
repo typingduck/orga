@@ -40,6 +40,10 @@ such as the examples.
 
     pytest
 
+## Run notebooks
+
+    PYTHONPATH=$PWD:$PYTHONPATH jupyter notebook --notebook-dir=notebooks/
+
 
 ## TODO:
 

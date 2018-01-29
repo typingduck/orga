@@ -2,6 +2,10 @@
 # python
 env/
 __pycache__/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
 
 # vim
 .*.sw?
