@@ -26,7 +26,7 @@ versus deep organizations:
 
     source env/bin/activate
     export MPLBACKEND="module://itermplot"
-    python orga.py
+    python examples/basic3x3.py
 
 
 ### Storing updates
