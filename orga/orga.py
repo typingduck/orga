@@ -2,9 +2,8 @@ import logging
 import random
 import string
 
-import networkx as nx
-
 from orga import nxe
+from orga import tree
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +23,6 @@ class Engine(object):
         """
         self.graph = create_hierarchy_graph(graph_k, graph_d, node_gen_fn)
         self.graphHead = next(iter(self.graph.nodes))
-        self.nodeToPos = add_noise(nxe.hierarchy_pos(self.graph, self.graphHead))
 
     def __iter__(self):
         while True:  # Let the caller dictate the duration
@@ -40,7 +38,7 @@ def validate_new_node(node):
 
 
 def create_hierarchy_graph(graph_k, graph_d, node_gen_fn):
-    g = nx.DiGraph(name='Örg Ås Board')
+    graph = tree.Tree(name='Örg Ås Board')
 
     last_layer = []
     layer_prefixes = string.ascii_lowercase[:graph_d]
@@ -48,50 +46,38 @@ def create_hierarchy_graph(graph_k, graph_d, node_gen_fn):
         layer_count = pow(graph_k, d)
         layer_names = [layer_prefix + str(c) for c in range(layer_count)]
         layer = [validate_new_node(node_gen_fn(name)) for name in layer_names]
-        g.add_nodes_from(layer)
+        graph.add_nodes_from(layer)
 
         for i, parent in enumerate(last_layer):
             for j in range(graph_k):
                 child = layer[i * graph_k + j]
-                g.add_edge(parent, child)
+                graph.add_edge(parent, child)
 
         last_layer = layer
 
-    return nx.freeze(g)
+    return graph
 
 
-def work_cycle(G, node):
+def work_cycle(graph, node):
     """Recursive function to apply 'do_work' to each node.
 
     Calls the 'do_work' function starting at the leaves first and going
     towards the head.
     """
-    children = G.adj[node]
+    children = graph.adj[node]
     for n in children:
-        work_cycle(G, n)
+        work_cycle(graph, n)
     node.do_work(children)
 
 
-def feedback_cycle(G, node):
+def feedback_cycle(graph, node):
     """Recursive function to apply 'do_work' to each node.
 
     Calls the 'feedback' function starting at the head first and going
     towards the leaves.
     """
-    children = G.adj[node]
+    children = graph.adj[node]
     node.feedback(children)
+    children = graph.adj[node]
     for n in children:
-        feedback_cycle(G, n)
-
-
-def add_noise(pos_dict):
-    """Adds a little noise to node location tuples.
-
-    pos_dict should be a dict of node to 2D tuple location.
-    """
-    def noise(x):
-        return x + (-0.5 + random.random())/30
-    for n in pos_dict.keys():
-        pt = pos_dict[n]
-        pos_dict[n] = (noise(pt[0]), noise(pt[1]))
-    return pos_dict
+        feedback_cycle(graph, n)
