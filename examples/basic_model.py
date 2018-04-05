@@ -43,7 +43,7 @@ class Employee(object):
         else:
             self.tribute = self.WORK_RATE
 
-    def feedback(self, reportees):
+    def feedback(self, reportees, graph):
         if reportees:
             peer_tributes = [n.tribute for n in reportees]
             total = sum(peer_tributes)

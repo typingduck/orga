@@ -77,7 +77,7 @@ def feedback_cycle(graph, node):
     towards the leaves.
     """
     children = graph.adj[node]
-    node.feedback(children)
+    node.feedback(children, graph)
     children = graph.adj[node]
     for n in children:
         feedback_cycle(graph, n)
